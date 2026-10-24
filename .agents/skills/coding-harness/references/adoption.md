@@ -46,6 +46,22 @@ The helper manages `coding-harness`, `development`, `impeccable`,
 fingerprints. AGENTS.md, `.agents/context/`, unrelated files, and other skills are
 never sync targets. Local-only files in a managed folder are also preserved.
 
+## Adopting existing local customizations
+
+When the developer wants existing local workflows to win, preview without a
+baseline, review the conflicts, then use `apply --keep-local --expect-plan
+<planDigest>`. This first-adoption-only option adds missing shared files and
+records existing differing files as local overrides; it leaves their contents
+intact. It does not require replacing local skills to register the harness.
+
+Keep a coupled package intact when it has capabilities absent from the central
+version. Pass `--local-package impeccable` to both `plan` and `apply` to keep that
+entire package repo-owned. The tracked manifest remembers this exclusion, and
+future refreshes neither add, replace, nor delete files inside it. Local design
+skills still use the repo's product/design contract. Review a package migration
+separately before removing the exclusion; preserve its capabilities and local
+extensions. The same option accepts other known harness package names.
+
 ## Automatic refresh with local priority
 
 When requested, enable automatic updates after adoption:

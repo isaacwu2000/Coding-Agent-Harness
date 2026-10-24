@@ -200,6 +200,34 @@ class SyncTests(unittest.TestCase):
                 f"# {package}\n",
             )
 
+    def test_first_adoption_can_keep_existing_local_files(self):
+        self.write(self.target, self.name, "Custom workflow\n")
+        plan = sync.build_plan(self.source, self.target)
+        sync.apply_plan(plan, plan["planDigest"], keep_local=True)
+        sync.enable_automatic(self.source, self.target)
+        self.assertEqual((self.target / self.name).read_text(), "Custom workflow\n")
+        self.assertIn(self.name, sync.refresh_automatic(self.target)["localOverrides"])
+        with self.assertRaises(sync.SyncError):
+            plan = sync.build_plan(self.source, self.target)
+            sync.apply_plan(plan, plan["planDigest"], keep_local=True)
+
+    def test_local_package_remains_intact_through_automatic_updates(self):
+        package = ".agents/skills/impeccable/"
+        original = self.write(self.target, package + "SKILL.md", "Newer local engine\n")
+        plan = sync.build_plan(self.source, self.target, local_packages=["impeccable"])
+        sync.apply_plan(plan, plan["planDigest"])
+        sync.enable_automatic(self.source, self.target)
+        self.write(self.source, package + "SKILL.md", "Central changed\n")
+        self.write(self.source, package + "new.md", "Different engine API\n")
+        self.commit_source()
+        sync.refresh_automatic(self.target)
+        self.assertEqual(original.read_text(), "Newer local engine\n")
+        self.assertFalse((self.target / (package + "new.md")).exists())
+        self.assertEqual(
+            json.loads((self.target / sync.MANIFEST).read_text())["localPackages"],
+            ["impeccable"],
+        )
+
     def test_automatic_refresh_updates_shared_and_preserves_local_overrides(self):
         self.install()
         sync.enable_automatic(self.source, self.target)

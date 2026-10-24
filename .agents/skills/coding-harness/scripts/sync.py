@@ -162,7 +162,7 @@ def public_plan(plan):
     return {key: value for key, value in plan.items() if not key.startswith("_")}
 
 
-def build_plan(source, target, baseline=None):
+def build_plan(source, target, baseline=None, local_packages=None):
     source, target = repository(source), repository(target)
     if source == target:
         raise SyncError("Source and target must be different repositories")
@@ -189,6 +189,20 @@ def build_plan(source, target, baseline=None):
     baseline_data = read_json(Path(baseline)) if baseline else None
     if baseline_data and baseline_data.get("target") != str(target):
         raise SyncError("Adoption baseline belongs to another target")
+    selected = (
+        (previous or {}).get("localPackages", [])
+        if local_packages is None
+        else local_packages
+    )
+    if not isinstance(selected, list) or any(name not in PACKAGES for name in selected):
+        raise SyncError("Invalid localPackages; use known harness package names")
+    local_packages = sorted(set(selected))
+
+    def is_local(name):
+        return any(
+            name.startswith(f".agents/skills/{package}/") for package in local_packages
+        )
+
     adopted = baseline_data["files"] if baseline_data else {}
     old_files = previous["files"] if previous else {}
     incoming = inventory(source)
@@ -200,6 +214,8 @@ def build_plan(source, target, baseline=None):
     payloads = {name: (source / name).read_bytes() for name in incoming}
     if revision != git(source, "rev-parse", "HEAD") or inventory(source) != incoming:
         raise SyncError("Source changed while preparing the plan")
+    incoming = {name: value for name, value in incoming.items() if not is_local(name)}
+    old_files = {name: value for name, value in old_files.items() if not is_local(name)}
     actions, conflicts, before = [], [], {}
     for name in sorted(incoming.keys() | old_files.keys()):
         current = fingerprint(safe_path(target, name))
@@ -227,6 +243,7 @@ def build_plan(source, target, baseline=None):
         "sourceRevision": revision,
         "packages": list(PACKAGES),
         "files": incoming,
+        "localPackages": local_packages,
     }
     # Explicit hashes bind preview to current target, prior manifest, and incoming content.
     material = {
@@ -235,6 +252,7 @@ def build_plan(source, target, baseline=None):
         "incoming": incoming,
         "before": before,
         "manifestBefore": fingerprint(manifest_path),
+        "localPackages": local_packages,
         "actions": actions,
     }
     digest = hashlib.sha256(json.dumps(material, sort_keys=True).encode()).hexdigest()
@@ -269,9 +287,17 @@ def atomic_write(path, content, executable=False):
             os.unlink(temporary)
 
 
-def apply_plan(plan, expected_digest):
+def apply_plan(plan, expected_digest, keep_local=False):
     if plan["planDigest"] != expected_digest:
         raise SyncError("Preview is stale; inspect a fresh plan before applying")
+    if keep_local:
+        if plan["_manifest_before"] is not None:
+            raise SyncError("--keep-local is only for first adoption")
+        plan = dict(plan)
+        plan["actions"] = [
+            item for item in plan["actions"] if item["action"] != "conflict"
+        ]
+        plan["conflicts"] = []
     if plan["conflicts"]:
         raise SyncError(
             "Local changes conflict with sync: " + ", ".join(plan["conflicts"])
@@ -416,8 +442,11 @@ def main():
         command.add_argument("--source", required=True)
         command.add_argument("--target", required=True)
         command.add_argument("--adopt-baseline")
+        command.add_argument("--local-package", action="append", choices=PACKAGES)
+
         if name == "apply":
             command.add_argument("--expect-plan", required=True)
+            command.add_argument("--keep-local", action="store_true")
     args = parser.parse_args()
     try:
         if args.command == "snapshot":
@@ -445,11 +474,18 @@ def main():
                 )
             )
         else:
-            plan = build_plan(args.source, args.target, args.adopt_baseline)
+            plan = build_plan(
+                args.source, args.target, args.adopt_baseline, args.local_package
+            )
             if args.command == "apply":
-                apply_plan(plan, args.expect_plan)
+                apply_plan(plan, args.expect_plan, args.keep_local)
             print(json.dumps(public_plan(plan), indent=2))
-            return 2 if plan["conflicts"] else 0
+            return (
+                2
+                if plan["conflicts"]
+                and not (args.command == "apply" and args.keep_local)
+                else 0
+            )
     except (SyncError, OSError) as error:
         parser.exit(1, f"{error}\n")
     return 0
