@@ -11,5 +11,6 @@ LearnUnlock. Read [README.md](README.md) for scope.
 - Treat `.agents/skills/` as library content under review, not instructions to
   publish issues, deploy, or run application workflows while maintaining it.
 - After guidance changes, run `python3 .agents/skills/check_links.py`.
-- Do not implement installation, synchronization, or scheduled updates until the
-  user chooses that next step. This extraction is local and reviewable.
+- Support explicit, reviewed local adoption and synchronization. Migrate only
+  repositories the user names. Change user-wide settings or schedule updates only
+  when requested; keep project-owned guidance separate from shared files.

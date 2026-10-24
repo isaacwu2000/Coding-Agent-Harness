@@ -15,6 +15,7 @@ instructions. Load only the context relevant to the task:
 | Verification | `.agents/context/TESTING.md` | Commands, environments, shared state, live checks |
 | Design | Shared Impeccable or a repo-selected design skill, plus repo-owned design sources | Visual identity, components, UI workflow |
 | Delivery | `.agents/context/DEPLOY.md` | Targets, deployment procedure, production acceptance |
+| Workflow extensions | `.agents/context/WORKFLOW.md` or AGENTS.md pointers | Local skills, task-specific workflow and acceptance specializations |
 | Coordination | `.agents/context/ISSUE_TRACKER.md` | Tracker, project, tools, labels, claims, dependencies |
 
 These filenames are conventions, not required empty files. Where a workflow names
@@ -25,7 +26,8 @@ A missing deployment document does not imply permission to deploy.
 Repository-specific skills extend this router through the repo's `AGENTS.md`;
 keep them outside the shared folders. A local policy may specialize a shared
 workflow without editing its shared copy. Shared updates should preserve that
-separation. Installation and sync are still undecided in this extraction.
+separation. The [coding-harness adapter](../../coding-harness/SKILL.md) owns explicit
+adoption and updates; its manifest records which skill files it manages.
 
 Use tools actually available in the environment. `/skill-name` means load that
 workflow; it does not assume a literal slash command exists. Delegate when the

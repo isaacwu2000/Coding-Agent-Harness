@@ -16,3 +16,10 @@ When the user requests local tickets, use the local-file branch of
 Wayfinder's shared claims and dependency queries, require a configured tracker.
 If the target is ambiguous, clarify before publishing. A workflow's instruction
 to publish is subject to the user's current scope and authorization.
+
+## Wayfinding operations
+
+Use the receiving repo's configured map, child-ticket, dependency, claim, and
+frontier operations. The bundled [GitHub adapter](github.md#wayfinding-operations)
+provides defaults when GitHub is selected; repo-owned tracker guidance specializes
+them without editing the shared copy.
