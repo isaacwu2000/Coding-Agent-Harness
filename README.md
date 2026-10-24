@@ -7,7 +7,7 @@ The harness supplies workflows, not an agent runtime or product UI.
 ## What's here
 
 - [Coding harness adapter](.agents/skills/coding-harness/SKILL.md): clone locally,
-  adopt into a project, sync reviewed updates, or route through a global entrypoint.
+  adopt into a project, sync reviewed updates, or route through a global entrypoint with automatic refresh.
 
 - [Development router](.agents/skills/development/SKILL.md): discovery, specifications,
   dependency-aware tickets, implementation, debugging, reviews, research, and handoffs.
@@ -45,16 +45,30 @@ must use each tool's supported entrypoint. Codex global use is described below.
 Developers and agents use a local clone and ordinary project files. The adapter
 provides workflow; each project retains its own context and local skills.
 
-## Explicit updates
+## Updates and local overrides
 
 [The adoption guide](.agents/skills/coding-harness/references/adoption.md) describes
 first-time migration and subsequent syncs. The tool previews changes before apply,
 records an exact clean source commit in `.agents/harness.json`, and refuses local
 conflicts. It manages only its listed shared skills and checker. Root AGENTS.md,
 project context, application code, and local skills stay project-owned. Nothing
-syncs on a schedule or at task startup.
+syncs on a schedule. Automatic task-start refresh can be enabled below.
 
-For a previously adopted repo, from your local harness clone:
+For an adopted repo, enable automatic updates from your local clone:
+
+```sh
+python3 .agents/skills/coding-harness/scripts/sync.py enable-auto --source . --target /path/to/project
+```
+
+Follow the adoption guide to add the task-start adapter instruction to that repo.
+The adapter refreshes unchanged shared files before use. Local edits and local
+instructions take priority; other shared files continue updating. This consumes
+committed changes in your local clone, without background polling or GitHub pulls.
+
+**General improvement → central clone. Project-specific improvement → local repo.**
+The local version is what the agent uses whenever it differs from shared defaults.
+
+For a manual update, from your local harness clone:
 
 ```sh
 python3 .agents/skills/coding-harness/scripts/sync.py plan --source . --target /path/to/project
@@ -62,7 +76,8 @@ python3 .agents/skills/coding-harness/scripts/sync.py apply --source . --target 
 ```
 
 Edit reusable workflows in your local clone or fork and commit them before sync.
-Changes made directly to installed shared files remain protected as conflicts;
+Changes made directly to installed shared files remain local overrides during
+automatic refresh, or protected conflicts during manual sync;
 review them for promotion or move project-specific exceptions into local context.
 
 ## Install for local Codex
