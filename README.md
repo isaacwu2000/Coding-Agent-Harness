@@ -39,8 +39,10 @@ must use each tool's supported entrypoint. Codex global use is described below.
 > destination. Keep the other shared skills in the clone. For a project I ask you
 > to adopt, inspect existing instructions and local changes, show the migration
 > differences, preserve project-specific rules and tools, and install a versioned
-> local copy. Never overwrite unreviewed edits or migrate another project. Follow
-> my existing scope for commits/pushes.
+> local copy. Enable automatic task-start refresh from this clone, with local edits
+> taking priority. General improvements go in the central clone; project-specific
+> improvements stay local. Preserve unreviewed edits and migrate only projects I
+> name. Follow my existing scope for commits/pushes.
 
 Developers and agents use a local clone and ordinary project files. The adapter
 provides workflow; each project retains its own context and local skills.
@@ -49,8 +51,8 @@ provides workflow; each project retains its own context and local skills.
 
 [The adoption guide](.agents/skills/coding-harness/references/adoption.md) describes
 first-time migration and subsequent syncs. The tool previews changes before apply,
-records an exact clean source commit in `.agents/harness.json`, and refuses local
-conflicts. It manages only its listed shared skills and checker. Root AGENTS.md,
+records an exact clean source commit in `.agents/harness.json`, and protects local
+edits. Manual sync refuses conflicts; automatic refresh retains them as overrides. It manages only its listed shared skills and checker. Root AGENTS.md,
 project context, application code, and local skills stay project-owned. Nothing
 syncs on a schedule. Automatic task-start refresh can be enabled below.
 

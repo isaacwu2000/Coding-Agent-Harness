@@ -42,7 +42,10 @@ The result's `skillsPath` selects the adopted repo's `.agents/skills` when its
 manifest exists; otherwise it selects the sibling skills in this local harness
 clone. Read the selected `development/SKILL.md` for software work, or
 `impeccable/SKILL.md` for design/UI work. Resolve all further file links from the
-actual selected skill directory, keeping commands' working directory in the
+actual selected skill directory. Before following any workflow or child link,
+prefer the receiving repo's same-path skill if it exists, even without a harness
+manifest; use the shared copy only where the repo has no local version. Keep
+commands' working directory in the
 receiving project. Use the project's package manager/runtime as its policy allows.
 
 If an unadopted project already selects a different development or design
