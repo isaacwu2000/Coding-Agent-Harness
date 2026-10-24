@@ -46,6 +46,19 @@ platform parity. Keep these completion rules in that one place.
 2. Before acting, load the one playbook that owns the request: the Commands table's reference for an explicit or clearly implied sub-command, or [references/new-work.md](references/new-work.md) for a new surface or replacement visual world. Then inspect the target and at least one representative source of incumbent visual truth (tokens, theme, CSS, component, or asset) before editing.
 3. After analysis and direction are resolved, load [references/craft-floor.md](references/craft-floor.md) immediately before editing UI. It carries the quality floor, the absolute bans, and the reflexes no detector catches. Do not load it for planning-only work.
 
+**Context helper unavailable:** Tell the user that context loading did not run,
+then read the receiving repo's existing product/design sources directly. Inspect
+the target, tokens, components, and assets and follow the applicable playbook and
+craft floor. Keep missing context explicitly unknown; a helper failure alone
+does not block work that the brief and available evidence already establish.
+
+**App unavailable:** Start with committed visual-regression goldens or screenshot
+fixtures when available. Establish which route, theme, variant, state, revision,
+and viewport each capture represents. Check freshness against current tokens,
+styles, components, and assets; resolve conflicts before using a capture as
+visual authority. Label fixture-based conclusions separately from live evidence.
+A historical screenshot cannot prove current interaction or integration behavior.
+
 ## Guidance scope
 
 Read [the repository context contract](../development/references/repository-context.md).
