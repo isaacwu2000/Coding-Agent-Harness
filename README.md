@@ -34,10 +34,13 @@ must use each tool's supported entrypoint. Codex global use is described below.
 
 > Clone https://github.com/isaacwu2000/Coding-Agent-Harness.git into a local
 > directory I can keep and edit. Read its `.agents/skills/coding-harness/SKILL.md`
-> and follow the adoption guide for my project. Inspect existing instructions and
-> local changes first; show the migration differences, preserve project-specific
-> rules and tools, and install a versioned local copy. Never overwrite unreviewed
-> edits or migrate another project. Follow my existing scope for commits/pushes.
+> and its adoption guide. Set up the `coding-harness` entrypoint globally for my
+> local Codex by linking that folder into `~/.agents/skills`, preserving any existing
+> destination. Keep the other shared skills in the clone. For a project I ask you
+> to adopt, inspect existing instructions and local changes, show the migration
+> differences, preserve project-specific rules and tools, and install a versioned
+> local copy. Never overwrite unreviewed edits or migrate another project. Follow
+> my existing scope for commits/pushes.
 
 Developers and agents use a local clone and ordinary project files. The adapter
 provides workflow; each project retains its own context and local skills.
@@ -62,11 +65,12 @@ Edit reusable workflows in your local clone or fork and commit them before sync.
 Changes made directly to installed shared files remain protected as conflicts;
 review them for promotion or move project-specific exceptions into local context.
 
-## Global use in local Codex
+## Install for local Codex
 
 Codex reads user skills from `~/.agents/skills` and follows symlinked skill folders.
 [Official skill documentation](https://learn.chatgpt.com/docs/build-skills).
-Link only the adapter, using the absolute path to your local clone:
+The recommended local Codex setup links only the adapter, using the absolute
+path to your local clone:
 
 ```sh
 mkdir -p ~/.agents/skills
