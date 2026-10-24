@@ -208,6 +208,36 @@ class SyncTests(unittest.TestCase):
             sync.resolve_library(self.target, directory), self.target / ".agents/skills"
         )
 
+    def test_symlinked_global_entrypoint_resolves_its_clone(self):
+        directory = self.source / ".agents/skills/coding-harness"
+        helper = directory / "scripts/sync.py"
+        helper.parent.mkdir(parents=True)
+        helper.write_bytes(Path(sync.__file__).read_bytes())
+        self.commit_source()
+        user_skills = Path(self.temporary.name) / "user-skills"
+        user_skills.mkdir()
+        link = user_skills / "coding-harness"
+        link.symlink_to(directory, target_is_directory=True)
+        result = subprocess.run(
+            [
+                "python3",
+                str(link / "scripts/sync.py"),
+                "resolve",
+                "--target",
+                str(self.target),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(json.loads(result.stdout)["skillsPath"], str(directory.parent))
+
+    def test_global_fallback_works_before_git_initialization(self):
+        new_project = Path(self.temporary.name) / "new-project"
+        new_project.mkdir()
+        directory = self.source / ".agents/skills/coding-harness"
+        self.assertEqual(sync.resolve_library(new_project, directory), directory.parent)
+
 
 if __name__ == "__main__":
     unittest.main()
