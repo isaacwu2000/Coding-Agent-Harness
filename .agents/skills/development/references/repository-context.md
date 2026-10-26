@@ -29,6 +29,9 @@ in repo-owned instructions when authorized; a copied Bun rule does not govern a
 pnpm app. Package-manager choice and a script's runtime are separate: preserve
 intentional Bun runtimes when invoking existing scripts through pnpm. Keep
 mixed-package repositories scoped rather than imposing one global tool rule.
+Check the executable version before installs or lockfile changes: managed tool
+shims may ignore manifest pins. Use supported version selection to honor the
+project’s pin instead of silently regenerating locks with a different major.
 
 Repository-specific skills extend this router through the repo's `AGENTS.md`;
 keep them outside the shared folders. A local policy may specialize a shared
