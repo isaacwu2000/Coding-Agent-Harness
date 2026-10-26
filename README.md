@@ -12,7 +12,7 @@ Give this to your agent:
 > directory I can keep and edit. Read `.agents/skills/coding-harness/SKILL.md` and
 > its adoption guide. Register only the adapter globally for local Codex,
 > preserving any existing destination. For the repos I name, replace reviewed
-> shared copies with thin entrypoints into this checkout. Preserve local context,
+> shared copies with direct AGENTS.md routing into this checkout. Preserve local context,
 > specialized skills, local overrides, and concurrent work. General improvements
 > go in this shared clone; project-specific improvements stay local. Follow my
 > existing publication scope.

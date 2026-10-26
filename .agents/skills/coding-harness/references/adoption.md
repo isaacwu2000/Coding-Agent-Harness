@@ -21,11 +21,12 @@ supported entrypoints; no global AGENTS.md change is required.
    genuinely different behavior. Move small product-specific rules into local
    workflow context. Preserve coupled local packages with capabilities absent
    centrally, rather than mixing their engine files with shared ones.
-3. Replace reviewed shared copies with thin entrypoints for development,
-   Impeccable, and writing-for-agents as needed. Mark each with
-   `<!-- coding-harness:entrypoint -->` and instruct the agent to run
-   `python3 .agents/harness.py --skill <name>` and read its `skillPath`.
-   Existing local workflow overrides may stay at their normal relative path.
+3. Remove reviewed shared copies and route coding, design, and guidance work
+   from AGENTS.md to `python3 .agents/harness.py --skill <name>`. Instruct agents
+   to read the returned `skillPath` alongside local context. Keep generic skills
+   in the central clone. Add thin skill entrypoints only when a tool needs them
+   for discovery; mark those with `<!-- coding-harness:entrypoint -->` so they
+   dispatch rather than override. Existing local overrides keep their normal paths.
 4. Copy [the bootstrap](../assets/harness.py) to `.agents/harness.py`. Write a
    small `.agents/harness.json` with `schemaVersion: 2`, `mode: linked`, and
    `sourceRepository` identifying the clone's public origin (without credentials).
@@ -37,8 +38,8 @@ supported entrypoints; no global AGENTS.md change is required.
 
    The bootstrap also supports `CODING_HARNESS_HOME`, a sibling harness clone,
    and the global adapter symlink. Keep machine paths out of tracked files.
-5. Replace old copy/sync instructions and dangling child-file links with the thin
-   router or explicit resolver commands. Read the repo's local context alongside
+5. Replace old copy/sync instructions and dangling child-file links with
+   explicit resolver commands. Read the repo's local context alongside
    shared workflows. Test root and child resolution, verify local priority, and
    run guidance checks. Inspect the diff and preserve unrelated work. Commit or
    push only within the user's scope and local delivery rules.

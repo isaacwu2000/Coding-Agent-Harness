@@ -5,8 +5,8 @@ description: Set up or use the central coding and design harness from a local cl
 
 # Coding Harness
 
-Keep one editable local clone of the shared library. Receiving repos retain thin
-entrypoints, project context, and specialized skills. Read the receiving repo's
+Keep one editable local clone of the shared library. Receiving repos retain
+project context and specialized skills, with AGENTS.md routing to this resolver. Read the receiving repo's
 AGENTS.md and relevant local context first; this clone's maintenance instructions
 do not become application policy.
 
