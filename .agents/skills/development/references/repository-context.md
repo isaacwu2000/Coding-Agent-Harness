@@ -23,6 +23,13 @@ one of them, follow the equivalent source identified by the repo, including for 
 inspect the relevant configuration and ask only for material missing decisions.
 A missing deployment document does not imply permission to deploy.
 
+Resolve package tooling per active package from its manifest (`packageManager`,
+engines, and scripts), current lockfile, and CI setup. Reconcile stale tool rules
+in repo-owned instructions when authorized; a copied Bun rule does not govern a
+pnpm app. Package-manager choice and a script's runtime are separate: preserve
+intentional Bun runtimes when invoking existing scripts through pnpm. Keep
+mixed-package repositories scoped rather than imposing one global tool rule.
+
 Repository-specific skills extend this router through the repo's `AGENTS.md`;
 keep them outside the shared folders. A local policy may specialize a shared
 workflow without editing its shared copy. Shared updates should preserve that

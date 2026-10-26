@@ -12,7 +12,10 @@ receiving Git repository root. A fresh clone contains the adapter and scripts.
 ## First adoption
 
 1. Read the repo's instructions and inspect local changes, its skill folders,
-   product/design context, testing, and delivery policy. Preserve concurrent work.
+   product/design context, testing, and delivery policy. Check each active package's
+   manifest, lockfile, and CI tooling; correct stale AGENTS.md package-manager
+   rules when adopting, preserving mixed-package scopes and script runtimes.
+   Preserve concurrent work.
 2. Review differences against the shared library. Move genuine local policy into
    repo-owned context or local skills and add explicit routing from AGENTS.md.
    Preserve useful capabilities absent from the central version; a folder-wide
