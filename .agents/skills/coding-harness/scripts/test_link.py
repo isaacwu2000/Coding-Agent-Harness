@@ -70,7 +70,21 @@ class LinkTests(unittest.TestCase):
             capture_output=True,
             text=True,
         )
-        self.assertEqual(json.loads(result.stdout)["skillPath"], str(self.shared.resolve()))
+        self.assertEqual(
+            json.loads(result.stdout)["skillPath"], str(self.shared.resolve())
+        )
+
+    def test_coupled_local_package_never_mixes_in_missing_central_resources(self):
+        (self.root / ".agents/harness.json").write_text(
+            '{"schemaVersion":2,"mode":"linked","localPackages":["development"]}'
+        )
+        with self.assertRaises(ValueError):
+            link.resolve(self.root, self.source, "development")
+        local = self.root / ".agents/skills/development/SKILL.md"
+        local.write_text("Local coupled workflow")
+        self.assertEqual(
+            link.resolve(self.root, self.source, "development")["scope"], "local"
+        )
 
     def test_missing_or_escaping_workflow_fails(self):
         for name in ["../secret", "/absolute", "development/missing"]:

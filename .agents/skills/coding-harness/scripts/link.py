@@ -63,6 +63,17 @@ def resolve(project, source, skill=None):
         if name.is_absolute() or ".." in name.parts or str(name) != skill:
             raise ValueError("Skill must be a relative workflow path")
         relative = name if name.suffix else name / "SKILL.md"
+        manifest = root / ".agents/harness.json"
+        local_packages = (
+            json.loads(manifest.read_text()).get("localPackages", [])
+            if manifest.is_file()
+            else []
+        )
+        if not isinstance(local_packages, list) or not all(
+            isinstance(name, str) for name in local_packages
+        ):
+            raise ValueError("Manifest localPackages must be a list of package names")
+        coupled_local = relative.parts[0] in local_packages
         local = root / ".agents/skills" / relative
         shared = source / ".agents/skills" / relative
         # Thin entrypoints dispatch to the shared workflow rather than to themselves.
@@ -70,7 +81,9 @@ def resolve(project, source, skill=None):
             local.is_file()
             and b"<!-- coding-harness:entrypoint -->" in local.read_bytes()
         )
-        selected = local if local.is_file() and not entrypoint else shared
+        selected = (
+            local if coupled_local or (local.is_file() and not entrypoint) else shared
+        )
         if not selected.is_file():
             raise ValueError(f"Workflow not found: {skill}")
         result.update(
