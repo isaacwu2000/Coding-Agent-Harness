@@ -34,7 +34,9 @@ Repository-specific skills extend this router through the repo's `AGENTS.md`;
 keep them outside the shared folders. A local policy may specialize a shared
 workflow without editing its shared copy. Shared updates should preserve that
 separation. The [coding-harness adapter](../../coding-harness/SKILL.md) owns explicit
-adoption and updates; its manifest records which skill files it manages.
+adoption and live resolution. Receiving repos keep thin entrypoints, not copied
+shared trees. When following a shared workflow or resource, use its repo-local
+counterpart if present; otherwise read it directly from the central checkout.
 
 Use tools actually available in the environment. `/skill-name` means load that
 workflow; it does not assume a literal slash command exists. Delegate when the
